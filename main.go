@@ -33,6 +33,25 @@ type News struct {
 func main() {
 	var r RSS
 	data := readGoogleTrends()
+
+	err := xml.Unmarshal(data, &r)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+
+	fmt.Println("\n Trends for Today")
+	fmt.Print("-\n")
+
+	for i := range r.Channel.ItemList {
+		rank := (i + 1)
+		fmt.Println("#", rank)
+		fmt.Println("Search Term:", r.Channel.ItemList[i].Title)
+		fmt.Println("Link:", r.Channel.ItemList[i].Link)
+		for y := range r.Channel.ItemList[i].NewsItems {
+			fmt.Println("	Headline: ", r.Channel.ItemList[i].NewsItems[y].Headline)
+			fmt.Println("	Link: ", r.Channel.ItemList[i].NewsItems[y].HeadlineLink)
+		}
+	}
 }
 
 func getGoogleTrends() *http.Response {
